@@ -10,7 +10,7 @@ The project creates an abstraction of function signatures to uniquely represent 
 
 Rendering the signature index permanent (i.e. unchanged across executions) is investigated by means of generating and persisting an index table. A generalization of an 'index space' is investigated to provide right-sized spaces for indexes for arbitrary properties of objects.
 
-It is hoped an application of the graph of functions is to analyze behavior of discrete finite systems, or produce representations by means of graphs of functions and fixed inputs.
+It is hoped an application of the graph of functions is to analyze behavior of discrete finite systems, or produce representations of processes by means of graphs of functions and fixed inputs.
 
 Here is example code from the tests suite:
 
