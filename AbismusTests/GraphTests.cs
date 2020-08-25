@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System;
 using System.Linq;
+using System.Xml.Linq;
 
-namespace Abismus.Graph.Tests
+namespace Abismus.Tests.Graph
 {
     using Abismus.Graph;
+    using Abismus.Serialization;
 
     [TestClass]
     public class GraphTests
     {
-        private static readonly HashSet<Edge<int>> alteryxWorkflow, alteryxPaths;
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        HashSet<Edge<IntSerializable>> sampleWorkflow, samplePaths;
+#pragma warning restore CS8618
 
-        static GraphTests()
+        [TestInitialize]
+        public void Init()
         {
             #region Sample data
 
             // http://graphonline.ru/en/?graph=rnNIuHBgplgRqXlv
-            alteryxWorkflow = new HashSet<Edge<int>>
+            sampleWorkflow = new HashSet<Edge<IntSerializable>>
             {
                 (1, 2),
                 (2, 3),
@@ -55,7 +60,7 @@ namespace Abismus.Graph.Tests
             };
 
             // http://graphonline.ru/en/?graph=SuWTpPlKVyCTUkGj
-            alteryxPaths = new HashSet<Edge<int>>
+            samplePaths = new HashSet<Edge<IntSerializable>>
             {
                 //// Path 1
                 //(1, 2), 
@@ -100,7 +105,7 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void EdgeEquality1Test()
+        public void EdgeEquality1()
         {
             var edge1 = (1, 2);
             var edge2 = (1, 2);
@@ -109,7 +114,7 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void EdgeEquality2Test()
+        public void EdgeEquality2()
         {
             var edge1 = (1, 1);
             var edge2 = edge1;
@@ -118,7 +123,7 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void EdgeInequality1Test()
+        public void EdgeInequality1()
         {
             var edge1 = (1, 2);
             var edge2 = (1, 3);
@@ -127,7 +132,7 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void EdgeInequality2Test()
+        public void EdgeInequality2()
         {
             var edge1 = (1, 2);
             var edge2 = (2, 1);
@@ -136,15 +141,15 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void SampleDataTest()
+        public void SampleData()
         {
-            Assert.AreEqual(32, alteryxWorkflow.Count);
+            Assert.AreEqual(32, sampleWorkflow.Count);
         }
 
         [TestMethod]
-        public void FindInitialEdgesTest()
+        public void FindInitialEdges()
         {
-            var edges = alteryxPaths.FindInitialEdges();
+            var edges = samplePaths.FindInitialEdges();
             Assert.AreEqual(2, edges.Count());
             //Assert.IsTrue(edges.Contains((1, 2)));
             //Assert.IsTrue(edges.Contains((6, 7)));
@@ -153,9 +158,9 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void FindTerminalEdgesTest()
+        public void FindTerminalEdges()
         {
-            var edges = alteryxPaths.FindTerminalEdges();
+            var edges = samplePaths.FindTerminalEdges();
             Assert.AreEqual(3, edges.Count());
             //Assert.IsTrue(edges.Contains((8, 9)));
             //Assert.IsTrue(edges.Contains((10, 12)));
@@ -166,9 +171,9 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void FindForkEdgesTest()
+        public void FindForkEdges()
         {
-            var edges = alteryxPaths.FindForkEdges();
+            var edges = samplePaths.FindForkEdges();
             Assert.AreEqual(6, edges.Count());
             //Assert.IsTrue(edges.Contains((2, 3)));
             //Assert.IsTrue(edges.Contains((2, 8)));
@@ -185,9 +190,9 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void FindJoinEdgesTest()
+        public void FindJoinEdges()
         {
-            var edges = alteryxPaths.FindJoinEdges();
+            var edges = samplePaths.FindJoinEdges();
             Assert.AreEqual(4, edges.Count());
             //Assert.IsTrue(edges.Contains((2, 8)));
             //Assert.IsTrue(edges.Contains((7, 8)));
@@ -200,9 +205,9 @@ namespace Abismus.Graph.Tests
         }
 
         //[TestMethod]
-        //public void WalkTest()
+        //public void Walk()
         //{
-        //    var trees = alteryxPaths.Walk();
+        //    var trees = samplePaths.Walk();
         //    Assert.AreEqual(2, trees.Count());
 
         //    var tree1 = trees.First();
@@ -249,81 +254,239 @@ namespace Abismus.Graph.Tests
         //}
 
         //[TestMethod]
-        //public void TreePositionsTest()
+        //public void TreePositions()
         //{
-        //    var treePositions = alteryxPaths.TreePositions(0);
+        //    var treePositions = samplePaths.TreePositions(0);
         //    Assert.IsTrue(treePositions.SequenceEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7 }));
         //}
 
         //[TestMethod]
         //public void TreePositionsTest2()
         //{
-        //    var treePositions = alteryxPaths.TreePositions(1);
+        //    var treePositions = samplePaths.TreePositions(1);
         //    Assert.IsTrue(treePositions.SequenceEqual(new int[] { 1, 2, 3, 4, 5 }));
         //}
 
         //[TestMethod]
-        //public void TreeByPositionsTest()
+        //public void TreeByPositions()
         //{
-        //    var tree = alteryxPaths.TreeByPositions(0);
-        //    var edgeTree = alteryxPaths.Tree((0, 1));
+        //    var tree = samplePaths.TreeByPositions(0);
+        //    var edgeTree = samplePaths.Tree((0, 1));
         //    Assert.IsTrue(tree.SequenceEqual(edgeTree));
         //}
 
         [TestMethod]
-        public void TreeTest1()
+        public void Tree1()
         {
-            var tree = alteryxPaths.Tree((0, 1));
-            Assert.IsTrue(tree.SequenceEqual(new Edge<int>[] { (0, 1), (1, 2), (2, 3), (3, 4),
-                (4, 13), (13, 14), (1, 5), (5, 6) }));
+            var tree = samplePaths.Tree((0, 1));
+            Assert.IsTrue(tree.SequenceEqual(new Edge<IntSerializable>[] { 
+                (0, 1), (1, 2), (2, 3), (3, 4), (4, 13), (13, 14), (1, 5), (5, 6) 
+            }));
         }
 
         [TestMethod]
-        public void TreeTest2()
+        public void Tree1b()
         {
-            var tree = alteryxPaths.Tree((1, 2));
+            var tree = samplePaths.Tree((7, 8));
+            Assert.IsTrue(tree.SequenceEqual(new Edge<IntSerializable>[] {
+                (7, 8), (8, 5), (5, 6), (8, 9), (9, 10), (10, 12), (12, 13), (13, 14), (9, 11)
+            }));
+        }
+
+        [TestMethod]
+        public void Tree1c()
+        {
+            var tree = samplePaths.Tree((2, 3));
+            Assert.IsTrue(tree.SequenceEqual(new Edge<IntSerializable>[] {
+                (2, 3), (3, 4), (4, 13), (13, 14)
+            }));
+        }
+
+        [TestMethod]
+        public void Tree1d()
+        {
+            var tree = samplePaths.Tree((10, 9));
+            Assert.IsTrue(tree.SequenceEqual(Array.Empty<Edge<IntSerializable>>()));
+        }
+
+        [TestMethod]
+        public void TreeVertexes1()
+        {
+            var vert = samplePaths.TreeVertexes((0, 1));
+
+            Assert.IsTrue(vert.SequenceEqual(new IntSerializable[] {
+                0, 1, 2, 3, 4, 13, 14, 5, 6
+            }));
+        }
+
+        [TestMethod]
+        public void TreeVertexes1b()
+        {
+            var vert = samplePaths.TreeVertexes((7, 8));
+
+            Assert.IsTrue(vert.SequenceEqual(new IntSerializable[] {
+                7, 8, 5, 6, 9, 10, 12, 13, 14, 11
+            }));
+        }
+
+        [TestMethod]
+        public void TreeVertexes1c()
+        {
+            var vert = samplePaths.TreeVertexes((2, 3));
+
+            Assert.IsTrue(vert.SequenceEqual(new IntSerializable[] {
+                2, 3, 4, 13, 14
+            }));
+        }
+
+        [TestMethod]
+        public void TreeVertexes1d()
+        {
+            var vert = samplePaths.TreeVertexes((10, 9));
+
+            Assert.IsTrue(vert.SequenceEqual(Array.Empty<IntSerializable>()));
+        }
+
+        [TestMethod]
+        public void TreeVertexes2()
+        {
+            var hs = new HashSet<Edge<IntSerializable>>()
+            {
+                (1, 2),
+                (2, 3)
+            };
+            var vert = hs.TreeVertexes(hs.First());
+            Assert.IsTrue(vert.SequenceEqual(new IntSerializable[] {
+                1, 2, 3
+            }));
+        }
+
+        [TestMethod]
+        public void TreeVertexes2b()
+        {
+            var hs = new HashSet<Edge<IntSerializable>>()
+            {
+                (1, 2),
+                (2, 3)
+            };
+            _ = hs.TreeVertexes(hs.First());
+            hs.Add((3, 4));
+            var vert = hs.TreeVertexes(hs.First());
+            Assert.IsTrue(vert.SequenceEqual(new IntSerializable[] {
+                1, 2, 3, 4
+            }));
+        }
+
+        [TestMethod]
+        public void TreeVertexes2c()
+        {
+            var hs = new HashSet<Edge<IntSerializable>>()
+            {
+                (1, 2),
+                (2, 3)
+            };
+            _ = hs.TreeVertexes(hs.First());
+            hs.Add((3, 4));
+            var vert = hs.TreeVertexes(hs.First()).ToArray();
+            Assert.IsTrue(vert.SequenceEqual(new IntSerializable[] {
+                1, 2, 3, 4
+            }));
+        }
+
+        [TestMethod]
+        public void Tree2()
+        {
+            var tree = samplePaths.Tree((1, 2));
             Assert.AreEqual(5, tree.Count());
-            Assert.IsTrue(tree.SequenceEqual(new Edge<int>[] { (1, 2), (2, 3), (3, 4), (4, 13),
-                (13, 14) }));
+            Assert.IsTrue(tree.SequenceEqual(new Edge<IntSerializable>[] { 
+                (1, 2), (2, 3), (3, 4), (4, 13), (13, 14) 
+            }));
         }
 
         [TestMethod]
-        public void TreeTest3()
+        public void Tree3()
         {
-            var tree = alteryxPaths.Tree((1, int.MaxValue));
+            var tree = samplePaths.Tree((1, int.MaxValue));
             Assert.AreEqual(0, tree.Count());
         }
 
         [TestMethod]
-        public void TreeTest4()
+        public void Tree4()
         {
-            var tree = alteryxPaths.Tree((13, 14));
+            var tree = samplePaths.Tree((13, 14));
             Assert.AreEqual(1, tree.Count());
             Assert.IsTrue(tree.First().Equals((13, 14)));
         }
 
         [TestMethod]
-        public void TreeParentsTest()
+        public void Tree5()
         {
-            var tree = alteryxPaths.Tree((0, 1));
+            var hs = new HashSet<Edge<IntSerializable>>()
+            {
+                (1, 2),
+                (2, 3)
+            };
+            var tree = hs.Tree((1, 2));
+            Assert.IsTrue(tree.SequenceEqual(new Edge<IntSerializable>[] {
+                (1, 2), (2, 3)
+            }));
+        }
+
+        [TestMethod]
+        public void Tree5b()
+        {
+            var hs = new HashSet<Edge<IntSerializable>>()
+            {
+                (1, 2),
+                (2, 3)
+            };
+            var tree = hs.Tree((1, 2));
+            hs.Add((3, 4));
+            Assert.IsTrue(tree.SequenceEqual(new Edge<IntSerializable>[] {
+                (1, 2), (2, 3), (3, 4)
+            }));
+        }
+
+        [TestMethod]
+        public void TreeCycle1()
+        {
+            var hs = new HashSet<Edge<IntSerializable>>()
+            {
+                (1, 2),
+                (2, 1)
+            };
+            var tree = hs.Tree((1, 2));
+            var treeEn = tree.GetEnumerator();
+            treeEn.MoveNext();
+            Assert.AreEqual((1, 2), treeEn.Current);
+            // Next produces a crash
+            //treeEn.MoveNext();
+        }
+
+        [TestMethod]
+        public void TreeParents()
+        {
+            var tree = samplePaths.Tree((0, 1));
             var parents = tree.Select(e => e.Parent);
-            Assert.IsTrue(parents.SequenceEqual(new Edge<int>[] { default, (0, 1), (1, 2), (2, 3),
-                (3, 4), (4, 13), (0, 1), (1, 5) }));
+            Assert.IsTrue(parents.SequenceEqual(new Edge<IntSerializable>[] { 
+                (0, 1), (1, 2), (2, 3), (3, 4), (4, 13), (0, 1), (1, 5) 
+            }));
         }
 
         [TestMethod]
-        public void WalkUpTest1()
+        public void WalkUp1()
         {
-            var tree = alteryxPaths.Tree((0, 1));
+            var tree = samplePaths.Tree((0, 1));
             var walkUp = tree.Single(e => e.Equals((13, 14))).WalkUp();
-            Assert.IsTrue(walkUp.SequenceEqual(new Edge<int>[] { (13, 14), (4, 13), (3, 4), (2, 3),
-                (1, 2), (0, 1) }));
+            Assert.IsTrue(walkUp.SequenceEqual(new Edge<IntSerializable>[] { 
+                (13, 14), (4, 13), (3, 4), (2, 3), (1, 2), (0, 1) 
+            }));
         }
 
         [TestMethod]
-        public void OverlapTest()
+        public void Overlap()
         {
-            var trees = alteryxPaths.AllTrees();
+            var trees = samplePaths.AllTrees();
             var tree1 = trees.First();
             var tree2 = trees.Skip(1).First();
 
@@ -339,8 +502,7 @@ namespace Abismus.Graph.Tests
 
             var tree1MinusOverlap = tree1.Except(overlap);
             var tree2MinusOverlap = tree2.Except(overlap);
-            var sum = new HashSet<Edge<int>>(tree1MinusOverlap.Union(tree2MinusOverlap)
-                .Union(overlap));
+            var sum = new HashSet<Edge<IntSerializable>>(tree1MinusOverlap.Union(tree2MinusOverlap).Union(overlap));
 
             // Walk the entire graph again, but this time the assembled graph. Then, check that 
             // each tree equals the original graph's trees.
@@ -359,11 +521,11 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void WalkInitialsTest()
+        public void WalkInitials()
         {
             // Test that the first edge in each tree returned by Walk() is one of the initial edges
-            var initials = alteryxPaths.FindInitialEdges();
-            var trees = alteryxPaths.AllTrees();
+            var initials = samplePaths.FindInitialEdges();
+            var trees = samplePaths.AllTrees();
             Assert.AreEqual(initials.Count(), trees.Count());
             var initialsEn = initials.GetEnumerator();
             var treesEn = trees.GetEnumerator();
@@ -375,21 +537,20 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void InitialsPlusJoinsTest()
+        public void InitialsPlusJoins()
         {
-            // Test that the initial edge's trees plus the join edge's trees summed equal the 
-            // original graph
-            var trees = alteryxPaths.AllTrees();
-            var joins = alteryxPaths.FindJoinEdges();
+            // Test that the initial edge's trees plus the join edge's trees summed equal the original graph
+            var trees = samplePaths.AllTrees();
+            var joins = samplePaths.FindJoinEdges();
             // Walk from each join
-            var joinTrees = joins.Select(j => alteryxPaths.Tree(j));
+            var joinTrees = joins.Select(j => samplePaths.Tree(j));
             // Intersect
             var overlap = trees.First().Intersect(trees.Skip(1).First());
             // Subtract
             var treesMinusOverlap = trees.Select(t => t.Except(overlap));
             // Sum
-            var sum = new HashSet<Edge<int>>(treesMinusOverlap.First().Union(
-                treesMinusOverlap.Skip(1).First()).Union(overlap));
+            var sum = new HashSet<Edge<IntSerializable>>(treesMinusOverlap.First().Union(treesMinusOverlap.Skip(1)
+                .First()).Union(overlap));
 
             var sumTrees = sum.AllTrees();
             Assert.AreEqual(sumTrees.Count(), trees.Count());
@@ -403,67 +564,109 @@ namespace Abismus.Graph.Tests
         }
 
         [TestMethod]
-        public void ValidateTreePositive1Test()
+        public void ValidateTreePositive1()
         {
-            var tree = alteryxPaths.Tree((0, 1));
+            var tree = samplePaths.Tree((0, 1));
             tree.ValidateTree();
         }
 
         [TestMethod]
-        public void ValidateTreePositive2Test()
+        public void ValidateTreePositive2()
         {
-            var tree = new HashSet<Edge<int>>() { (0, 1) }.Tree((0, 1));
+            var tree = new HashSet<Edge<IntSerializable>>() { (0, 1) }.Tree((0, 1));
             tree.ValidateTree();
         }
 
         [TestMethod]
-        public void ValidateTreeNegative1Test()
+        public void ValidateTreeNegative1()
         {
-            var edges = alteryxPaths.ToList();
+            var edges = samplePaths.ToList();
             edges.Insert(1, (1, 1));
             var tree = edges.AsSet().Tree((0, 1));
-            Assert.ThrowsException<CycleException<int>>(tree.ValidateTree);
+            Assert.ThrowsException<CycleException<IntSerializable>>(tree.ValidateTree);
             try
             {
                 tree.ValidateTree();
             }
-            catch (CycleException<int> e)
+            catch (CycleException<IntSerializable> e)
             {
                 Assert.IsTrue(e.Edge.Equals((1, 1)));
             }
         }
 
         [TestMethod]
-        public void ValidateTreeNegative2Test()
+        public void ValidateTreeNegative2()
         {
-            var edges = alteryxPaths.ToList();
+            var edges = samplePaths.ToList();
             edges.Insert(1, (2, 0));
             var tree = edges.AsSet().Tree((0, 1));
-            Assert.ThrowsException<CycleException<int>>(tree.ValidateTree);
+            Assert.ThrowsException<CycleException<IntSerializable>>(tree.ValidateTree);
             try
             {
                 tree.ValidateTree();
             }
-            catch (CycleException<int> e)
+            catch (CycleException<IntSerializable> e)
             {
                 Assert.IsTrue(e.Edge.Equals((2, 0)));
             }
         }
 
         [TestMethod]
-        public void ValidateEdgesTest()
+        public void ValidateEdges()
         {
-            alteryxPaths.ValidateEdges();
-            var alteryxPathsChanged = alteryxPaths.ToList();
-            alteryxPathsChanged[0] = (1, 1);
-            Assert.ThrowsException<CycleException<int>>(alteryxPathsChanged.AsSet().
-                ValidateEdges);
+            samplePaths.ValidateEdges();
+            var samplePathsChanged = samplePaths.ToList();
+            samplePathsChanged[0] = (1, 1);
+            Assert.ThrowsException<CycleException<IntSerializable>>(samplePathsChanged.AsSet().ValidateEdges);
 
-            alteryxPathsChanged[0] = (0, 1);
-            alteryxPathsChanged[1] = (15, 2); // (1, 2), invalid source
-            alteryxPathsChanged[6] = (16, 5); // (1, 5), invalid source
-            Assert.ThrowsException<UnconnectedEdgeException<int>>(alteryxPathsChanged.AsSet().
-                ValidateEdges);
+            samplePathsChanged[0] = (0, 1);
+            samplePathsChanged[1] = (15, 2); // (1, 2), invalid source
+            samplePathsChanged[6] = (16, 5); // (1, 5), invalid source
+            Assert.ThrowsException<UnconnectedEdgeException<IntSerializable>>(samplePathsChanged.AsSet().ValidateEdges);
         }
+
+        [TestMethod]
+        public void EdgeSerializeDeserialize()
+        {
+            var edge1 = new Edge<IntSerializable>(0, 1);
+            var ser = edge1.Serialize();
+            var edge1b = edge1.Deserializer.Deserialize(ser);
+            Assert.IsTrue(edge1.Equals(edge1b));
+        }
+
+        [TestMethod]
+        public void EdgeSetSerialize()
+        {
+            var edgeSet = new HashSet<Edge<IntSerializable>>(
+                new Edge<IntSerializable>[] {
+                    (0, 1), (1, 2)
+                }
+            );
+            var ser = edgeSet.Serialize();
+            Assert.IsTrue(
+                XNode.DeepEquals(
+                    new XElement("EdgeSet",
+                        new XElement("Edge",
+                            new XElement("Source",
+                                new XAttribute("Value", "0")
+                            ),
+                            new XElement("Sink",
+                                new XAttribute("Value", "1")
+                            )
+                        ),
+                        new XElement("Edge",
+                            new XElement("Source",
+                                new XAttribute("Value", "1")
+                            ),
+                            new XElement("Sink",
+                                new XAttribute("Value", "2")
+                            )
+                        )
+                    ), ser
+                )
+            );
+        }
+
+        // TODO: Test that all (current and future) edge set operations bypass null edges
     }
 }

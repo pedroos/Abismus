@@ -8,11 +8,12 @@ namespace Abismus.Node
 {
     public static class Dels
     {
-        public delegate T O<T>();
-        public delegate T OFromO<T>(T @in);
-        public delegate T OFromOO<T>((T, T) @in);
-        public delegate (T, T) OO<T>();
-        public delegate (T, T) OOFromO<T>(T @in);
-        public delegate (T, T) OOFromOO<T>((T, T) @in);
+        public delegate TO1 O<TO1>();
+        public delegate TO1 IO<TI1, TO1>(TI1 @in);
+        public delegate TO1 IIO<TI1, TI2, TO1>((TI1, TI2) @in);
+        public delegate TO1 IIIO<TI1, TI2, TI3, TO1>((TI1, TI2, TI3) @in);
+        public delegate (TO1, TO2) OO<TO1, TO2>();
+        public delegate (TO1, TO2) IOO<TI1, TO1, TO2>(TI1 @in);
+        public delegate (TO1, TO2) IIOO<TI1, TI2, TO1, TO2>((TI1, TI2) @in);
     }
 }

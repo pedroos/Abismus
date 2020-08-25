@@ -8,25 +8,30 @@ namespace Abismus.Node
 {
     public static class Funcs
     {
-        public static int Mult((int, int) @in)
+        public static int Mult((int a, int b) @in)
         {
-            return @in.Item1 * @in.Item2;
+            var (a, b) = @in;
+            return a * b;
         }
 
-        public static int Mirror(int @in)
+        public static int Mirror(int a)
         {
-            return @in;
+            return a;
         }
-
 
         public static int Fixed()
         {
             return 5;
         }
 
-        public static (int, int) Duplicate(int @in)
+        public static (int b, int c) Duplicate(int a)
         {
-            return (@in, @in);
+            return (a, a);
+        }
+
+        public static (int b, int c) Negate(int a)
+        {
+            return (-a, a);
         }
     }
 }
