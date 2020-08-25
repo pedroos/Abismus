@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AbismusTests", "..\AbismusT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AbismusCodeGeneration", "..\AbismusCodeGeneration\AbismusCodeGeneration.csproj", "{7F51E141-DE07-4966-9BE4-E73D64252E06}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoperHash", "..\..\_noperhash\CSharp\NoperHash\NoperHash.csproj", "{3D2DBAA8-BF8C-4215-8A75-4CDB94A2EE13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7F51E141-DE07-4966-9BE4-E73D64252E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F51E141-DE07-4966-9BE4-E73D64252E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F51E141-DE07-4966-9BE4-E73D64252E06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2DBAA8-BF8C-4215-8A75-4CDB94A2EE13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2DBAA8-BF8C-4215-8A75-4CDB94A2EE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2DBAA8-BF8C-4215-8A75-4CDB94A2EE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2DBAA8-BF8C-4215-8A75-4CDB94A2EE13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

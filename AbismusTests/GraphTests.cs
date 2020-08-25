@@ -469,7 +469,7 @@ namespace Abismus.Tests.Graph
             var tree = samplePaths.Tree((0, 1));
             var parents = tree.Select(e => e.Parent);
             Assert.IsTrue(parents.SequenceEqual(new Edge<IntSerializable>[] { 
-                (0, 1), (1, 2), (2, 3), (3, 4), (4, 13), (0, 1), (1, 5) 
+                null, (0, 1), (1, 2), (2, 3), (3, 4), (4, 13), (0, 1), (1, 5) // TODO: check this null value
             }));
         }
 

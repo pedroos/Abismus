@@ -10,13 +10,15 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Abismus.Signature
 {
+    using Psobo.NoperHash;
+
     public class Signature : IEquatable<Signature>
     {
         public IEnumerable<Type> Ins { get; private set; }
         public IEnumerable<Type> Outs { get; }
         
         internal IEnumerable<ulong> valsI;
-        internal IEnumerable<double> valsD;
+        internal double[] valsD;
         internal double number;
 
         public Signature(Delegate del)
@@ -51,10 +53,11 @@ namespace Abismus.Signature
             // Calculate value:
             valsI = Signatures.MakeList(Ins, Outs);
             valsD = valsI.ToDoubleArray();
-            number = Noper.Calc(valsD);
+            number = NoperHash.Calc(valsD);
         }
 
-        public bool Equals([AllowNull] Signature other) => other != null && Noper.DoubleEquals(other.number, number, Noper.Eps);
+        public bool Equals([AllowNull] Signature other) => other != null && NoperHash.DoubleEquals(other.number, number, 
+            NoperHash.Eps);
     }
 
     internal static class Signatures
@@ -143,7 +146,7 @@ namespace Abismus.Signature
 
     public static partial class Extensions
     {
-        public static IEnumerable<double> ToDoubleArray(this IEnumerable<ulong> funValues) => 
+        public static double[] ToDoubleArray(this IEnumerable<ulong> funValues) => 
             funValues.Select(v => Convert.ToDouble(v)).ToArray();
     }
 

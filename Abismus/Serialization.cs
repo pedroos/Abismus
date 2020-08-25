@@ -49,7 +49,8 @@ namespace Abismus.Serialization
         public override string ToString() => Value!.ToString()!;
     }
 
-    public class IntSerializable : ToStringSerializable<int>, ISerializable<IntSerializable>, IEquatable<IntSerializable>
+    public class IntSerializable : ToStringSerializable<int>, ISerializable<IntSerializable>, 
+        IEquatable<IntSerializable>
     {
         public IntSerializable(int value) : base(value) { }
 
@@ -57,8 +58,8 @@ namespace Abismus.Serialization
 
         IDeserializer<IntSerializable> ISerializable<IntSerializable>.Deserializer => IntSerializableDeserializer.Get;
 
-        public bool Equals([AllowNull] ISerializable<IntSerializable> other) => ((ISerializable<ToStringSerializable<int>>)this)
-            .Equals(other);
+        public bool Equals([AllowNull] ISerializable<IntSerializable> other) => 
+            ((ISerializable<ToStringSerializable<int>>)this).Equals(other);
 
         public bool Equals([AllowNull] IntSerializable other) => ((ISerializable<int>)this).Equals(other);
 
